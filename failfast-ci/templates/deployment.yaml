@@ -1,0 +1,142 @@
+# API server
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "failfast-ci.api-fullname" . }}
+  labels:
+    app: {{ template "failfast-ci.api-name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.api.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "failfast-ci.api-name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "failfast-ci.api-name" . }}
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          command:
+            - ./run-server.sh
+          env:
+            - name: CELERY_BACKEND
+              value: {{ .Values.redis.url }}
+            - name: CELERY_BROKER
+              value: {{ .Values.redis.url }}
+            - name: GITHUB_CONTEXT
+							value: {{ .Values.github.context }}
+            - name: GITLAB_API
+							value: {{ .Values.github.api }}
+            - name: FAILFASTCI_NAMESPACE
+              value: {{ .Values.gitlab.namespace }}
+            - name: FAILFAST_CI_API
+              value: {{ .Values.api.url }}
+            - name: GITLAB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: gitlab_user
+                  name: failfast-ci
+            - name: GITLAB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: gitlab_token
+                  name: failfast-ci
+            - name: GITHUB_INTEGRATION_ID
+              valueFrom:
+                secretKeyRef:
+                  key: integration_id
+                  name: failfast-ci
+            - name: GITHUB_INTEGRATION_PEM
+              valueFrom:
+                secretKeyRef:
+                  key: integration_pem
+                  name: failfast-ci
+          ports:
+            - containerPort: 5000
+              name: failfast-ci
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /version
+              port: 5000
+              scheme: HTTP
+{{ toYaml .Values.api.resources | indent 12 }}
+    {{- if .Values.api.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.api.nodeSelector | indent 8 }}
+    {{- end }}
+
+# Worker
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "failfast-ci.worker-fullname" . }}
+  labels:
+    app: {{ template "failfast-ci.worker-name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.worker.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "failfast-ci.worker-name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "failfast-ci.worker-name" . }}
+          image: "{{ .Values.worker.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
+          command:
+            - celery
+            - -A
+            - hub2labhook.jobs.runner
+            - worker
+            - -l
+            - debug
+          env:
+            - name: CELERY_BACKEND
+              value: {{ .Values.redis.url }}
+            - name: CELERY_BROKER
+              value: {{ .Values.redis.url }}
+            - name: GITHUB_CONTEXT
+							value: {{ .Values.github.context }}
+            - name: GITLAB_API
+							value: {{ .Values.github.api }}
+            - name: FAILFASTCI_NAMESPACE
+              value: {{ .Values.gitlab.namespace }}
+            - name: FAILFAST_CI_API
+              value: {{ .Values.api.url }}
+            - name: GITLAB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: gitlab_user
+                  name: failfast-ci
+            - name: GITLAB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: gitlab_token
+                  name: failfast-ci
+            - name: GITHUB_INTEGRATION_ID
+              valueFrom:
+                secretKeyRef:
+                  key: integration_id
+                  name: failfast-ci
+            - name: GITHUB_INTEGRATION_PEM
+              valueFrom:
+                secretKeyRef:
+                  key: integration_pem
+                  name: failfast-ci
+{{ toYaml .Values.worker.resources | indent 12 }}
+    {{- if .Values.worker.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.worker.nodeSelector | indent 8 }}
+    {{- end }}

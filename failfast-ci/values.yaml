@@ -1,0 +1,67 @@
+api:
+  image:
+    repository: registry.cnct.io/common-tools/container-failfast-ci/container-failfast-ci-api
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicas: 1
+  # The url at which failfast-ci api will be listening for github webhooks
+  url: ""
+  resources: {}
+    # If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+worker:
+    repository: registry.cnct.io/common-tools/container-failfast-ci/container-failfast-ci-worker
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicas: 1
+  resources: {}
+    # If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+redis:
+  url: redis://failfast-redis:6379
+
+github:
+  # The github context is in the path to the repo, eg. in "github.com/myproject/myrepo"
+  # "myproject" is the context.
+  context: ""
+  integrationId: ""
+  integrationPem: ""
+
+gitlab:
+  api: https://gitlab.com
+  # The gitlab namespace is in the path to the repo, eg. in "gitlab.com/myproject/myrepo"
+  # "myproject" is the namespace.
+  namespace: ""
+  user: ""
+  token: ""
+
+    
+service:
+  name: failfast-ci-api
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  hosts:
+    - failfast-ci-api.local
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: failfast-ci-api-tls
+    #   hosts:
+    #     - failfast-ci-api.local

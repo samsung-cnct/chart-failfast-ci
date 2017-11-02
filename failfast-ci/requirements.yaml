@@ -1,0 +1,5 @@
+appr:
+  - name: quay.io/samsung_cnct/redis
+    repository: appr://
+    version: 0.8.0-0
+    alias: failfast-redis

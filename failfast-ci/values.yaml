@@ -16,6 +16,7 @@ api:
     #  cpu: 100m
     #  memory: 128Mi
 worker:
+  image:
     repository: registry.cnct.io/common-tools/container-failfast-ci/container-failfast-ci-worker
     tag: latest
     pullPolicy: IfNotPresent

@@ -1,12 +1,12 @@
 {{- if .Values.ingress.enabled -}}
-{{- $serviceName := include "failfast-ci.api-fullname" . -}}
+{{- $serviceName := include "api-fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "failfast-ci.api-fullname" . }}
+  name: {{ template "api-fullname" . }}
   labels:
-    app: {{ template "failfast-ci.api-name" . }}
+    app: {{ template "api-name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

@@ -3,9 +3,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "failfast-ci.api-fullname" . }}
+  name: {{ template "api-fullname" . }}
   labels:
-    app: {{ template "failfast-ci.api-name" . }}
+    app: {{ template "api-name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -14,11 +14,11 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "failfast-ci.api-name" . }}
+        app: {{ template "api-name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "failfast-ci.api-name" . }}
+        - name: {{ template "api-name" . }}
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           command:
@@ -29,9 +29,9 @@ spec:
             - name: CELERY_BROKER
               value: {{ .Values.redis.url }}
             - name: GITHUB_CONTEXT
-							value: {{ .Values.github.context }}
+              value: {{ .Values.github.context }}
             - name: GITLAB_API
-							value: {{ .Values.github.api }}
+              value: {{ .Values.github.api }}
             - name: FAILFASTCI_NAMESPACE
               value: {{ .Values.gitlab.namespace }}
             - name: FAILFAST_CI_API
@@ -66,6 +66,7 @@ spec:
               path: /version
               port: 5000
               scheme: HTTP
+          resources:
 {{ toYaml .Values.api.resources | indent 12 }}
     {{- if .Values.api.nodeSelector }}
       nodeSelector:
@@ -77,9 +78,9 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "failfast-ci.worker-fullname" . }}
+  name: {{ template "worker-fullname" . }}
   labels:
-    app: {{ template "failfast-ci.worker-name" . }}
+    app: {{ template "worker-name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -88,11 +89,11 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "failfast-ci.worker-name" . }}
+        app: {{ template "worker-name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "failfast-ci.worker-name" . }}
+        - name: {{ template "worker-name" . }}
           image: "{{ .Values.worker.image.repository }}:{{ .Values.api.image.tag }}"
           imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
           command:
@@ -108,9 +109,9 @@ spec:
             - name: CELERY_BROKER
               value: {{ .Values.redis.url }}
             - name: GITHUB_CONTEXT
-							value: {{ .Values.github.context }}
+              value: {{ .Values.github.context }}
             - name: GITLAB_API
-							value: {{ .Values.github.api }}
+              value: {{ .Values.github.api }}
             - name: FAILFASTCI_NAMESPACE
               value: {{ .Values.gitlab.namespace }}
             - name: FAILFAST_CI_API
@@ -135,6 +136,7 @@ spec:
                 secretKeyRef:
                   key: integration_pem
                   name: failfast-ci
+          resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
     {{- if .Values.worker.nodeSelector }}
       nodeSelector:

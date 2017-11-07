@@ -22,7 +22,7 @@ spec:
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           command:
-            - ./run-server.sh
+            - /run-api.sh
           env:
             - name: CELERY_BACKEND
               value: {{ .Values.redis.url }}
@@ -97,12 +97,7 @@ spec:
           image: "{{ .Values.worker.image.repository }}:{{ .Values.api.image.tag }}"
           imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
           command:
-            - celery
-            - -A
-            - hub2labhook.jobs.runner
-            - worker
-            - -l
-            - debug
+            - /run-worker.sh
           env:
             - name: CELERY_BACKEND
               value: {{ .Values.redis.url }}

@@ -58,7 +58,6 @@ gitlab:
     visibility: internal
 
 
-    
 service:
   name: failfast-ci-api
   type: ClusterIP

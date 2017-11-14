@@ -48,6 +48,15 @@ gitlab:
   namespace: ""
   user: ""
   token: ""
+  project_default:
+    shared_runners_allowed: true
+    container_registry_enabled: true
+    wiki_enabled: false
+    snippets_enabled: false
+    merge_requests_enabled: false
+    issues_enabled: false
+    visibility: internal
+
 
     
 service:

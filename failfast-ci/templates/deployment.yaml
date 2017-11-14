@@ -36,6 +36,20 @@ spec:
               value: {{ .Values.gitlab.namespace }}
             - name: FAILFAST_CI_API
               value: {{ .Values.api.url }}
+            - name: GITLAB_SHARED_RUNNERS
+              value: {{ .Values.gitlab.project_default.shared_runners_allowed }}
+            - name: GITLAB_CONTAINER_REGISTRY
+              value: {{ .Values.gitlab.container_registry_enabled }}
+            - name: GITLAB_WIKI
+              value: {{ .Values.gitlab.project_default.wiki_enabled }}
+            - name: GITLAB_SNIPPETS
+              value: {{ .Values.gitlab.project_default.snippets_enabled }}
+            - name: GITLAB_MERGE_REQUESTS
+              value: {{ .Values.gitlab.project_default.merge_requests_enabled }}
+            - name: GITLAB_ISSUES
+              value: {{ .Values.gitlab.project_default.visibility }}
+            - name: GITLAB_REPO_PRIVACY
+              value: {{ .Values.gitlab.project_default.visibility }}
             - name: GITLAB_USER
               valueFrom:
                 secretKeyRef:

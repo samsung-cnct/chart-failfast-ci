@@ -1,3 +1,8 @@
+# NOTE
+# this config requires the following secrets:
+#   - REGISTRY_PASSWORD  (the robot token for Quay user)
+
+
 image: $helm_registry_image:$helm_registry_version
 
 variables:
@@ -6,7 +11,8 @@ variables:
   chart_name: failfast-ci
   robot_account: failfast_ci_rw
   helm_registry_image: quay.io/samsung_cnct/helm-registry-agent
-  helm_registry_version: v0.1.5
+  helm_registry_version: v0.7.4-helm_2.7 
+  REGISTRY_PASSWORD: SECRET
 
 stages:
   - build

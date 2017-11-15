@@ -1,6 +1,6 @@
 api:
   image:
-    repository: registry.cnct.io/common-tools/container-failfast-ci/container-failfast-ci-api
+    repository: registry.cnct.io/ci-operations/container-failfast-ci/container-failfast-ci-api
     tag: latest
     pullPolicy: IfNotPresent
   replicas: 1
@@ -17,7 +17,7 @@ api:
     #  memory: 128Mi
 worker:
   image:
-    repository: registry.cnct.io/common-tools/container-failfast-ci/container-failfast-ci-worker
+    repository: registry.cnct.io/ci-operations/container-failfast-ci/container-failfast-ci-worker
     tag: latest
     pullPolicy: IfNotPresent
   replicas: 1

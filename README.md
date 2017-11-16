@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-
-# Failfast Deployment Chart
-
-This is a public chart for deploying [failfast-api][1] to integrate GitLab CI with GitHub workflows.
-
-
-
-
-[1]: https://github.com/failfast-ci/failfast-api
-
-
-=======
 # Failfast-CI Chart
 
 The failfast-ci chart is for installing the api server and worker pods for the [failfast-ci](https://github.com/samsung-cnct/failfast-api) github-gitlab integration tool. This tool is used for syncing github branches and pull requests to gitlab in order to use gitlab's CI tools and report the status of the CI run back to github.
